@@ -4,9 +4,9 @@ The purpose of this script is to calculate a students cumulative GPA by converti
 
 The following dependencies need to be installed for the program to run/function as intended.
 
-`pip install requests`
+`pip install requests` or `pip3 install requests`
 
-`pip install beautifulsoup4`
+`pip install beautifulsoup4` or `pip3 install beautifulsoup4`
 
 Finally, to run the script do `python script.py` or `python3 script.py` depending on your version.
 
