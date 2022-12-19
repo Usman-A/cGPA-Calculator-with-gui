@@ -2,34 +2,44 @@ import requests
 from getpass import getpass
 from bs4 import BeautifulSoup
 
-s = requests.session()
+MCMASTER_GRADES_URL = 'https://csprd.mcmaster.ca/psc/prcsprd/EMPLOYEE/SA/c/SA_LEARNER_SERVICES.SSS_MY_CRSEHIST.GBL?Page=SSS_MY_CRSEHIST&Action=U'
 
-url = 'https://csprd.mcmaster.ca/psc/prcsprd/EMPLOYEE/SA/c/SA_LEARNER_SERVICES.SSS_MY_CRSEHIST.GBL?Page=SSS_MY_CRSEHIST&Action=U'
+class AuthenticationError(ValueError):
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
 
-macid = input("Please enter your macid: ")
-password = getpass("Please enter your password: ")
+def fetch_grade_data(*, mac_id: str, password: str) -> BeautifulSoup:
+    """
+    This function authenticates and fetches raw grade data from the McMaster Grade site
 
-result = s.post(
-    url,
-    data = { "userid" : macid, "pwd" : password },
-    headers = dict(referer=url)
-)
+    Args:
+        mac_id (string): your MAC ID 
+        password (string): account password
+        
+    Returns: 
+    A beautiful soup object that can be used for parsing
+    """
+    # request data
+    requests_session = requests.session()
+    result = requests_session.post(
+        MCMASTER_GRADES_URL,
+        data = { "userid" : mac_id, "pwd" : password },
+        headers = dict(referer=MCMASTER_GRADES_URL)
+    )
+    requests_session.close()
+    
+    grade_soup = BeautifulSoup(result.content, "html.parser")
+    
+    # validate authentication
+    if grade_soup.body.find('span', attrs={'id' : 'login_error'}):
+        raise AuthenticationError("Login failed, please recheck user/pass")
+    
+    return grade_soup
+        
 
-s.close()
-
-soup = BeautifulSoup(result.content, "html.parser")
-
-error = soup.body.find('span', attrs={'id' : 'login_error'})
-if error:
-    print("Login Failed.\n")
-    quit(1)
-else:
-    print("Login Successful. \n")
-
-print("Retreiving Grades... \n")
-
-gradeData = soup.find_all('span', attrs=({'class' : 'PSEDITBOX_DISPONLY'}))[2::4]
-unitData = soup.find_all('span', attrs=({'class' : 'PSEDITBOX_DISPONLY'}))[3::4]
+gradeData = soup.find_all('span', attrs=({'class' : 'PSEDITBOX_DISPONLY'}))
+unitData = soup.find_all('span', attrs=({'class' : 'PSEDITBOX_DISPONLY'}))
 
 print("Converting from 12 Scale to 4.0... \n")
 
