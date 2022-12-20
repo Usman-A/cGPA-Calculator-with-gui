@@ -1,7 +1,11 @@
-import requests
-from getpass import getpass
-from bs4 import BeautifulSoup
+"""
+Contains the logic for scraping data off a McMaster site
 
+reworked by: @usman-a (github)
+authored by: @abdullahnafees (github)
+"""
+import requests
+from bs4 import BeautifulSoup
 
 MCMASTER_GRADES_URL = "https://csprd.mcmaster.ca/psc/prcsprd/EMPLOYEE/SA/c/SA_LEARNER_SERVICES.SSS_MY_CRSEHIST.GBL?Page=SSS_MY_CRSEHIST&Action=U"
 
