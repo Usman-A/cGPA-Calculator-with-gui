@@ -43,7 +43,7 @@ unitData = soup.find_all('span', attrs=({'class' : 'PSEDITBOX_DISPONLY'}))
 
 print("Converting from 12 Scale to 4.0... \n")
 
-gradeConversion = {
+grade_point_conversion_4_point = {
     'A+' : 4.0, 'A' : 3.9, 'A-' : 3.7,
     'B+' : 3.3, 'B' : 3.0, 'B-' : 2.7,
     'C+' : 2.3, 'C' : 2.0, 'C-' : 1.7,
